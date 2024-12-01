@@ -11,18 +11,25 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^5.22.0",
+    "bcrypt": "^5.1.1",
     "heroicons": "^2.2.0",
-    "next": "15.0.3",
+    "iron-session": "^8.0.4",
+    "next": "14.1.0",
     "prisma": "^5.22.0",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "validate": "^5.2.0",
+    "validator": "^13.12.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/validator": "^13.12.2",
     "eslint": "^8",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "14.1.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

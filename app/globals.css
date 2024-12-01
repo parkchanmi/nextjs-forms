@@ -18,7 +18,7 @@
     .primary-btn {
       @apply w-full bg-orange-500 text-white  font-medium  rounded-md text-center hover:bg-orange-400 transition-colors;
     }
-    .primary-btn2 {
+    /*.primary-btn2 {
         @apply w-full bg-neutral-200 text-black  font-medium  rounded-2xl text-center hover:bg-neutral-400 transition-colors;
-      }
+      }*/
     }
