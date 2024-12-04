@@ -23,8 +23,8 @@ async function getTweet(tweetId: number) {
           username: true,
           avatar: true,
         },
-      },
-    },
+      }
+    }
   });
   return tweet;
 }
@@ -50,6 +50,14 @@ async function getTweet(tweetId: number) {
         <div>
           <h3>Detail Tweet</h3>
         </div>
+      </div>
+      <div className="relative aspect-square">
+        <Image
+            className="object-cover"
+            fill
+            src={tweet.photo}
+            alt={tweet.tweet}
+            />
       </div>
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{tweet.tweet}</h1>
