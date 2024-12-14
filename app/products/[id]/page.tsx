@@ -5,11 +5,17 @@ import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  unstable_cache as nextCache,
+  revalidatePath,
+  revalidateTag,
+} from "next/cache";
+
 async function getIsOwner(userId: number) {
-  const session = await getSession();
+  /*const session = await getSession();
   if (session.id) {
     return session.id === userId;
-  }
+  }*/
   return false;
 }
 async function getProduct(id: number) {
@@ -29,6 +35,31 @@ async function getProduct(id: number) {
   return product;
 }
 
+const getCachedProduct = nextCache(getProduct, ["product-detail"], {
+  tags: ["product-detail"],
+});
+async function getProductTitle(id: number) {
+  console.log("title");
+  const product = await db.product.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      title: true,
+    },
+  });
+  return product;
+}
+const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
+  tags: ["product-title"],
+});
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const product = await getCachedProductTitle(Number(params.id));
+  return {
+    title: product?.title,
+  };
+}
+
   export default async function ProductDetail({
     params,
 }: {
@@ -38,18 +69,22 @@ async function getProduct(id: number) {
   if (isNaN(id)) {
     return notFound();
   }
-  const product = await getProduct(id);
+  const product = await getCachedProduct(id);
   if (!product) {
     return notFound();
   }
   const isOwner = await getIsOwner(product.userId);
+  const revalidate = async () => {
+    "use server";
+    revalidateTag("xxxx");
+  };
   return (
     <div>
       <div className="relative aspect-square">
         <Image
             className="object-cover"
             fill
-            src={product.photo}
+            src={`${product.photo}/width=500,height=500`}
             alt={product.title}
             />
       </div>
@@ -79,9 +114,11 @@ async function getProduct(id: number) {
           {formatToWon(product.price)}원
         </span>
         {isOwner ? (
+          <form action={revalidate}>
           <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-            Delete product
+            Revalidate title cache
           </button>
+        </form>
         ) : null}
         <Link
           className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
@@ -92,4 +129,12 @@ async function getProduct(id: number) {
       </div>
     </div>
   );
+}
+export async function generateStaticParams() {
+  const products = await db.product.findMany({
+    select: {
+      id: true,
+    },
+  });
+  return products.map((product) => ({ id: product.id + "" }));
 }

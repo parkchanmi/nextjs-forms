@@ -23,11 +23,14 @@ model User {
   avatar String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  SMSToken SMSToken[]
+  tokens SMSToken[]
   bio String?
-  Tweet Tweet[]
+  tweets Tweet2[]
+  Like2 Like2[]
   Like Like[]
-  Product    Product[]
+  products    Product[]
+  posts Post[]
+  Comment Comment[]
 }
 
 model SMSToken{
@@ -39,7 +42,7 @@ model SMSToken{
   userId Int
 }
 
-model Tweet{
+model Tweet2{
   tweetId Int @id @default(autoincrement())
   tweet String
   photo       String
@@ -47,14 +50,14 @@ model Tweet{
   updated_at DateTime @updatedAt
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  Like Like[]
+  Like Like2[]
 }
 
-model Like{
+model Like2{
   likeId Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  tweet Tweet @relation(fields: [tweetId], references: [tweetId], onDelete: Cascade)
+  tweet Tweet2 @relation(fields: [tweetId], references: [tweetId], onDelete: Cascade)
   tweetId Int 
   created_at DateTime @default(now())
   @@unique([userId, tweetId])
@@ -70,4 +73,36 @@ model Product {
   updated_at DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id])
   userId     Int
+}
+
+model Post {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  views       Int     @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  comments Comment[]
+  likes    Like[]
+}
+model Comment {
+  id      Int    @id @default(autoincrement())
+  payload String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId Int
+  postId Int
+}
+model Like {
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId Int
+  postId Int
+  @@id(name: "id", [userId, postId])
 }

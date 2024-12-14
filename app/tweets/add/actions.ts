@@ -29,7 +29,7 @@ export async function uploadTweet(_: any, formData: FormData) {
   } else {
     const session = await getSession();
     if (session.id) {
-      const tweet = await db.tweet.create({
+      const tweet = await db.tweet2.create({
         data: {
           tweet: result.data.tweet,
           photo: result.data.photo,
