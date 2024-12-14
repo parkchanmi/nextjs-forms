@@ -5,7 +5,7 @@ import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/solid";
 
 async function getInitialTweets() {
-    const tweets = await db.tweet.findMany({
+    const tweets = await db.tweet2.findMany({
         select: {
           tweet: true,
           created_at: true,

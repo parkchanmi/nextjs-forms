@@ -1,7 +1,7 @@
 "use server";
 import db from "@/lib/db";
 export async function getMoreTweets(page: number) {
-  const tweets = await db.tweet.findMany({
+  const tweets = await db.tweet2.findMany({
     select: {
       tweet: true,
       created_at: true,
