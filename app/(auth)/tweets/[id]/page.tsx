@@ -13,7 +13,7 @@ async function getIsOwner(userId: number) {
   return false;
 }
 async function getTweet(tweetId: number) {
-  const tweet = await db.tweet.findUnique({
+  const tweet = await db.tweet2.findUnique({
     where: {
       tweetId,
     },
