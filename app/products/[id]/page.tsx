@@ -1,7 +1,8 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserIcon ,StarIcon as SolidStarIcon} from "@heroicons/react/24/solid";
+import { StarIcon as OutlineStarIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,12 +11,14 @@ import {
   revalidatePath,
   revalidateTag,
 } from "next/cache";
+import BookMarkButton from "@/components/bookmark-Btn";
 
 async function getIsOwner(userId: number) {
-  /*const session = await getSession();
+  revalidateTag(`bookmark-status`);
+  const session = await getSession();
   if (session.id) {
     return session.id === userId;
-  }*/
+  }
   return false;
 }
 async function getProduct(id: number) {
@@ -73,11 +76,28 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   if (!product) {
     return notFound();
   }
-  const isOwner = await getIsOwner(product.userId);
-  const revalidate = async () => {
-    "use server";
-    revalidateTag("xxxx");
+  async function getBookMarkStatus(productId: number) {
+  const session = await getSession();
+  const isBookMark = await db.bookMark.findUnique({
+    where: {
+      id: {
+        productId,
+        userId: session.id!,
+      },
+    },
+  });
+  return {
+    isBookMark: Boolean(isBookMark),
   };
+}
+  function getCachedBookMarkStatus(productId: number) {
+    const cachedOperation = nextCache(getBookMarkStatus, ["bookmark-status"], {
+      tags: ["bookmark-status"],
+    });
+    return cachedOperation(productId);
+  }
+  const { isBookMark } = await getCachedBookMarkStatus(id);
+  const isOwner = getIsOwner(product.userId);
   return (
     <div>
       <div className="relative aspect-square">
@@ -88,7 +108,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
             alt={product.title}
             />
       </div>
-      <div className="p-5 flex items-center gap-3 border-b border-neutral-700">
+      <div className="p-5 flex items-center gap-3 border-b border-neutral-700 relative">
         <div className="size-10 overflow-hidden rounded-full">
           {product.user.avatar !== null ? (
             <Image
@@ -104,6 +124,9 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
         <div>
           <h3>{product.user.username}</h3>
         </div>
+        <div className="size-8 absolute right-5">
+          <BookMarkButton isBookMark={isBookMark} productId={product.id}/>
+        </div>
       </div>
       <div className="p-5">
         <h1 className="text-2xl font-semibold">{product.title}</h1>
@@ -113,13 +136,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
         <span className="font-semibold text-xl">
           {formatToWon(product.price)}원
         </span>
-        {isOwner ? (
-          <form action={revalidate}>
-          <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-            Revalidate title cache
-          </button>
-        </form>
-        ) : null}
+
         <Link
           className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
           href={``}

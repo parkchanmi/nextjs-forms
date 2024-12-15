@@ -6,6 +6,7 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 import { productSchema } from "./schema";
+import { revalidateTag } from "next/cache";
 
 /*const productSchema = z.object({
   photo: z.string({
@@ -29,7 +30,6 @@ const data = {
     price: formData.get("price"),
     description: formData.get("description"),
   };
-  console.log(data);
   /*if (data.photo instanceof File) {
     const photoData = await data.photo.arrayBuffer();
     await fs.appendFile(`./public/${data.photo.name}`, Buffer.from(photoData));
@@ -75,4 +75,32 @@ export async function getUploadUrl() {
   );
   const data = await response.json();
   return data;
+}
+
+export async function delBookMark(productId:number){
+  try {
+    const session = await getSession();
+    await db.bookMark.delete({
+      where: {
+        id: {
+          productId,
+          userId: session.id!,
+        },
+      },
+    });
+    revalidateTag(`bookmark-status`);
+  } catch (e) {}
+}
+export async function insBookMark(productId:number){
+  //await new Promise((r) => setTimeout(r, 10000));
+  const session = await getSession();
+  try {
+    await db.bookMark.create({
+      data: {
+        productId,
+        userId: session.id!,
+      },
+    });
+    revalidateTag(`bookmark-status`);
+  } catch (e) {}
 }

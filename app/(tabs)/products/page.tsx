@@ -1,4 +1,4 @@
-import ProductList from "@/components/product-list";
+import ProductList from "@/components/list/product-list";
 import db from "@/lib/db";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import { Prisma } from "@prisma/client";
@@ -13,7 +13,7 @@ async function getInitialProducts() {
           photo: true,
           id: true,
         },
-        take: 1,
+        take: 3,
         orderBy: {
         created_at: "desc",
         },

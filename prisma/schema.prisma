@@ -25,12 +25,13 @@ model User {
   updated_at DateTime @updatedAt
   tokens SMSToken[]
   bio String?
-  tweets Tweet2[]
-  Like2 Like2[]
+  tweets Tweet[]
+  tweetLike TweetLike[]
   Like Like[]
   products    Product[]
   posts Post[]
   Comment Comment[]
+  bookmarks BookMark[]
 }
 
 model SMSToken{
@@ -40,27 +41,6 @@ model SMSToken{
   updated_at DateTime @updatedAt
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-}
-
-model Tweet2{
-  tweetId Int @id @default(autoincrement())
-  tweet String
-  photo       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  Like Like2[]
-}
-
-model Like2{
-  likeId Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  tweet Tweet2 @relation(fields: [tweetId], references: [tweetId], onDelete: Cascade)
-  tweetId Int 
-  created_at DateTime @default(now())
-  @@unique([userId, tweetId])
 }
 
 model Product {
@@ -73,6 +53,7 @@ model Product {
   updated_at DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id])
   userId     Int
+  bookmark  BookMark[]
 }
 
 model Post {
@@ -87,6 +68,7 @@ model Post {
   comments Comment[]
   likes    Like[]
 }
+
 model Comment {
   id      Int    @id @default(autoincrement())
   payload String
@@ -97,6 +79,7 @@ model Comment {
   userId Int
   postId Int
 }
+
 model Like {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -105,4 +88,36 @@ model Like {
   userId Int
   postId Int
   @@id(name: "id", [userId, postId])
+}
+
+model Tweet{
+  tweetId Int @id @default(autoincrement())
+  content String
+  photo   String
+  views   Int     @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  likes TweetLike[]
+}
+
+model TweetLike{
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tweet   Tweet @relation(fields: [tweetId], references: [tweetId], onDelete: Cascade)
+  userId Int
+  tweetId Int
+  @@id(name: "id", [userId, tweetId])
+}
+
+model BookMark{
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId Int
+  productId Int
+  @@id(name: "id", [userId, productId])
 }

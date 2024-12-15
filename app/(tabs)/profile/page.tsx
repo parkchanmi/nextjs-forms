@@ -1,5 +1,7 @@
+import UserInfo from "@/components/item/item-user";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -10,6 +12,14 @@ async function getUser() {
       where: {
         id: session.id,
       },
+      include:{
+        _count: {
+            select: {
+              tweets: true,
+              tweetLike: true,
+            },
+          },
+      }
     });
     if (user) {
       return user;
@@ -18,21 +28,16 @@ async function getUser() {
   notFound();
 }
 async function Username() {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
   const user = await getUser();
   return (
-    <div className="flex flex-col gap-10 py-8 px-6">
-      <div className="flex flex-col gap-2 *:font-medium">
-        <h1 className="text-2xl">Profile</h1>
-        <h1>Welcome! {user?.username}!</h1>
-        <div className="*:mt-10">
-          <h3 className="text-xl">userName : {user?.username}</h3>
-          <h3 className="text-xl">email : {user?.email}</h3>
-        </div>
-        
-
+    <div>
+      <div className="border border-white py-8">
+        <UserInfo userId={user.id} username={user.username} email={user?.email} tweetCount={user._count.tweets} likeCount={user._count.tweetLike}/>
+        <div className="flex justify-center">
+            <Link href={`/users/${user.username}/edit`} className="primary-btn text-lg py-3 w-40">Edit Password</Link>
+            </div>
       </div>
-      </div>
+    </div>
   );
 }
 export default async function Profile() {

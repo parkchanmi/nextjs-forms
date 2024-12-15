@@ -49,7 +49,6 @@ export default function CreateAccount() {
         />
         <Button  text="Create account" />
       </form>
-      <SocialLogin />
     </div>
   );
 }

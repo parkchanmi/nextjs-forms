@@ -16,7 +16,6 @@ export async function likePost(postId: number) {
   } catch (e) {}
 }
 export async function dislikePost(postId: number) {
-  //await new Promise((r) => setTimeout(r, 10000));
   try {
     const session = await getSession();
     await db.like.delete({

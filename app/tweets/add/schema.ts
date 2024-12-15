@@ -3,8 +3,8 @@ export const tweetSchema = z.object({
   photo: z.string({
     required_error: "Photo is required",
   }),
-  tweet: z.string({
+  content: z.string({
     required_error: "Tweet Content is required!!!!!",
   }),
 });
-export type tweetType = z.infer<typeof tweetSchema>;
+export type TweetType = z.infer<typeof tweetSchema>;

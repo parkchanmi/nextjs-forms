@@ -1,19 +1,21 @@
-import TweetList from "@/components/tweet-list";
+import TweetList from "@/components/list/tweet-list";
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/solid";
 
 async function getInitialTweets() {
-    const tweets = await db.tweet2.findMany({
-        select: {
-          tweet: true,
-          created_at: true,
-          tweetId: true,
+    const tweets = await db.tweet.findMany({
+        include:{
+          user: {
+            select: {
+              username: true,
+            }
+          }
         },
-        take: 1,
+        take: 3,
         orderBy: {
-        created_at: "desc",
+          created_at: "desc",
         },
       });
       return tweets;

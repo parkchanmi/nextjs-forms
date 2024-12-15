@@ -1,6 +1,6 @@
 "use client";
 import { InitialProducts } from "@/app/(tabs)/products/page";
-import ListProduct from "./list-product";
+import ListProduct from "../item/item-product";
 import { useEffect, useRef, useState } from "react";
 import { getMoreProducts } from "@/app/(tabs)/products/actions";
 interface ProductListProps {
@@ -50,14 +50,6 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       {products.map((product) => (
         <ListProduct key={product.id} {...product} />
       ))}
-       {/* {!isLastPage ? (
-        <span
-          ref={trigger}
-          className="text-sm font-semibold bg-orange-500 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
-        >
-          {isLoading ? "로딩 중" : "Load more"}
-          </span>
-      ) : null} */}
     </div>
   );
 }
