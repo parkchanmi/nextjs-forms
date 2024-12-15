@@ -149,11 +149,11 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export async function generateStaticParams() {
+/*export async function generateStaticParams() {
   const products = await db.product.findMany({
     select: {
       id: true,
     },
   });
   return products.map((product) => ({ id: product.id + "" }));
-}
+}*/
