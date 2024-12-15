@@ -12,7 +12,7 @@ const checkPasswords = ({
 
 export const userSchema = z
   .object({
-   /// email: z.string().email().toLowerCase(),
+    email: z.string().email().toLowerCase(),
     password: z.string().min(PASSWORD_MIN_LENGTH),
     confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
   })

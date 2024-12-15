@@ -29,14 +29,14 @@ export type InitialTweets = Prisma.PromiseReturnType<
     const initialTweets = await getInitialTweets();
     return (
         <div>
+           <h1 className="text-center text-2xl">게시글 목록</h1>
+            <TweetList initialTweet={initialTweets} />
             <Link
               href="/tweets/add"
               className="bg-orange-500 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors hover:bg-orange-400"
             >
               <PlusIcon className="size-10" />
             </Link>
-            <TweetList initialTweet={initialTweets} />
-
         </div>
     );
   }

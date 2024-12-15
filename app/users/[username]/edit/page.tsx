@@ -23,6 +23,7 @@ export default function EditUserInfo({
 
   const onSubmit = handleSubmit(async (data: UserInfoType) => {
     const formData = new FormData();
+    formData.append("email", data.email);
     formData.append("password", data.password);
     formData.append("confirm_password", data.confirm_password);
     const errors = await updateUserInfo(formData);
@@ -36,7 +37,13 @@ export default function EditUserInfo({
   return (
     <div>
       <form action={onValid} className="p-5 flex flex-col gap-5">
-        <h3>Edit Password</h3>
+        <h3>Edit Info</h3>
+        <Input
+          type="email"
+          placeholder="email"
+          errors={[errors.email?.message ?? ""]}
+          {...register("email")}
+        />
         <Input
           type="password"
           placeholder="Password"

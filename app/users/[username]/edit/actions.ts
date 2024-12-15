@@ -20,7 +20,7 @@ export async function getUserInfo(username:string){
 export async function updateUserInfo(formData: FormData){
     const session = await getSession();
     const data = {
-        //email: formData.get("email"),
+        email: formData.get("email"),
         password: formData.get("password"),
         confirm_password: formData.get("confirm_password"),
     };
@@ -35,7 +35,7 @@ export async function updateUserInfo(formData: FormData){
                     id: session.id,
                 },
                 data: {
-                   // email: result.data.email,
+                    email: result.data.email,
                     password: hashedPassword,
                 },
                 select:{

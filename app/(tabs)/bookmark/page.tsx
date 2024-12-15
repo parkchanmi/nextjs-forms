@@ -50,6 +50,7 @@ export default async function Products() {
   const initialProducts = await getInitialProducts();
   return (
     <div>
+      <h1 className="text-center text-2xl">즐겨찾기 목록</h1>
       <BookMarkList initialProducts={initialProducts} />
     </div>
   );

@@ -68,7 +68,7 @@ export default async function Users({
             <UserInfo userId={userInfo.id} username={userInfo.username} email={userInfo?.email}
              tweetCount={userInfo._count.tweets} likeCount={userInfo._count.tweetLike}/>
             {isOwner?<div className="flex justify-center">
-            <Link href={`/users/${params.username}/edit`} className="primary-btn text-lg py-3 w-40">Edit Password</Link>
+            <Link href={`/users/${params.username}/edit`} className="primary-btn text-lg py-3 w-40">Edit Info</Link>
             </div>:null}
           </div>
           <div className="mt-10">

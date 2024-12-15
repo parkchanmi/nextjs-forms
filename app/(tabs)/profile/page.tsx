@@ -34,7 +34,7 @@ async function Username() {
       <div className="border border-white py-8">
         <UserInfo userId={user.id} username={user.username} email={user?.email} tweetCount={user._count.tweets} likeCount={user._count.tweetLike}/>
         <div className="flex justify-center">
-            <Link href={`/users/${user.username}/edit`} className="primary-btn text-lg py-3 w-40">Edit Password</Link>
+            <Link href={`/users/${user.username}/edit`} className="primary-btn text-lg py-3 w-40">Edit Info</Link>
             </div>
       </div>
     </div>

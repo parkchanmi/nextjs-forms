@@ -38,6 +38,7 @@ export default async function Products() {
   const initialProducts = await getInitialProducts();
   return (
     <div>
+      <h1 className="text-center text-2xl">등록된 물품</h1>
       <ProductList initialProducts={initialProducts} />
       <Link
         href="/products/add"
