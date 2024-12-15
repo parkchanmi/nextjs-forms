@@ -42,7 +42,6 @@ const getCachedProduct = nextCache(getProduct, ["product-detail"], {
   tags: ["product-detail"],
 });
 async function getProductTitle(id: number) {
-  console.log("title");
   const product = await db.product.findUnique({
     where: {
       id,
@@ -52,15 +51,6 @@ async function getProductTitle(id: number) {
     },
   });
   return product;
-}
-const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
-  tags: ["product-title"],
-});
-export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getCachedProductTitle(Number(params.id));
-  return {
-    title: product?.title,
-  };
 }
 
   export default async function ProductDetail({
@@ -76,12 +66,12 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   if (!product) {
     return notFound();
   }
-  async function getBookMarkStatus(productId: number) {
+  async function getBookMarkStatus(id: number) {
   const session = await getSession();
   const isBookMark = await db.bookMark.findUnique({
     where: {
       id: {
-        productId,
+        productId:id,
         userId: session.id!,
       },
     },
@@ -90,11 +80,11 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     isBookMark: Boolean(isBookMark),
   };
 }
-  function getCachedBookMarkStatus(productId: number) {
+  function getCachedBookMarkStatus(id: number) {
     const cachedOperation = nextCache(getBookMarkStatus, ["bookmark-status"], {
       tags: ["bookmark-status"],
     });
-    return cachedOperation(productId);
+    return cachedOperation(id);
   }
   const { isBookMark } = await getCachedBookMarkStatus(id);
   const isOwner = getIsOwner(product.userId);
@@ -125,7 +115,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
           <h3>{product.user.username}</h3>
         </div>
         <div className="size-8 absolute right-5">
-          <BookMarkButton isBookMark={isBookMark} productId={product.id}/>
+          <BookMarkButton isBookMark={isBookMark} productId={id}/>
         </div>
       </div>
       <div className="p-5">
@@ -147,6 +137,18 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     </div>
   );
 }
+
+const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
+  tags: ["product-title"],
+});
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const product = await getCachedProductTitle(Number(params.id));
+  return {
+    title: product?.title,
+  };
+}
+
 export async function generateStaticParams() {
   const products = await db.product.findMany({
     select: {
